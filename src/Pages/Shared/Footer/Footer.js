@@ -4,13 +4,14 @@ import footerImage from '../../../assets/images/footer.png';
 
 const Footer = () => {
     return (
-        <div>
-            <footer
-                style={{
-                    backgroundImage: `url(${footerImage})`,
-                    backgroundSize: 'cover'
-                }}
-                className="footer p-10 ">
+        <div
+
+            style={{
+                backgroundImage: `url(${footerImage})`,
+                backgroundSize: 'cover'
+            }}
+        >
+            <footer className="footer p-10 ">
                 <div>
                     <span className="footer-title">Services</span>
                     <Link to='/' className="link link-hover">Branding</Link>
@@ -32,8 +33,8 @@ const Footer = () => {
                     <Link className="link link-hover">Cookie policy</Link>
                 </div>
             </footer>
-            <div>
-                <p className='text-center mt-32'>Copyright © 2022 - All right reserved</p>
+            <div >
+                <p className='text-center mt-32 mb-4'>Copyright © 2022 - All right reserved</p>
             </div>
         </div>
     );
