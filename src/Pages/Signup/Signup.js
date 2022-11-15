@@ -1,12 +1,32 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../Contexts/AuthProvider';
 
 const Signup = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const { createUser, updateName } = useContext(AuthContext);
+    const [signupError, setSignuError] = useState('');
+
     const handleSignUp = data => {
-        console.log(data);
-        console.log(errors);
+        // console.log(data.name);
+        setSignuError('');
+        createUser(data.email, data.password)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                toast('User Created Successfully.')
+
+
+                updateName(data.name)
+                    .then(() => { })
+                    .catch(err => console.log(err));
+            })
+            .catch(error => {
+                console.log(error)
+                setSignuError(error.message)
+            });
     }
     return (
 
@@ -35,12 +55,16 @@ const Signup = () => {
                         <label className="label">
                             <span className="label-text">Password</span>
                         </label>
-                        <input type="password" {...register("password", { required: "Password is required", minLength: { value: 6, message: 'password must be 6 characters or more' } })} className="input input-bordered w-full max-w-xs" />
+                        <input type="password" {...register("password", {
+                            required: "Password is required", minLength: { value: 6, message: 'password must be 6 characters or more' },
+                            pattern: { value: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])/, message: 'password must be strengthen' }
+                        })} className="input input-bordered w-full max-w-xs" />
                         {errors.password && <p className='text-red-600'>{errors.password.message} </p>}
                     </div>
 
 
                     <input type="submit" className='btn btn-accent w-full mt-4' value='signup' />
+                    {signupError && <p className='text-red-600'>{signupError}</p>}
                 </form>
 
                 <p>Already have an account? <Link className='text-secondary' to='/login'>Login</Link></p>
