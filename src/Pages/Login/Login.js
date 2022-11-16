@@ -1,3 +1,4 @@
+import { data } from 'autoprefixer';
 import { da } from 'date-fns/locale';
 import { GoogleAuthProvider } from 'firebase/auth';
 import React, { useContext, useState } from 'react';
@@ -9,7 +10,7 @@ import { AuthContext } from '../../Contexts/AuthProvider';
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
 
-    const { signIn, googleLogin } = useContext(AuthContext);
+    const { signIn, googleLogin, reset } = useContext(AuthContext);
     const [loginError, setLoginError] = useState('');
     const location = useLocation();
     const navigate = useNavigate();
@@ -34,6 +35,8 @@ const Login = () => {
 
     }
 
+
+
     // google sign in 
     // google login 
     const handleGoogle = () => {
@@ -44,6 +47,13 @@ const Login = () => {
                 console.log(user);
             })
             .catch(error => console.error(error))
+    }
+
+    const resetPassword = () => {
+        console.log('reseting');
+        reset(data.email)
+            .then(() => { })
+            .catch(err => console.error(err))
     }
 
 
@@ -73,7 +83,7 @@ const Login = () => {
                         {errors.password && <p className='text-red-600'>{errors.password?.message}</p>}
 
                         <label className="label">
-                            <span className="label-text">Forget password?</span>
+                            <button onClick={resetPassword}><span className="label-text my-2">Forget password?</span></button>
                         </label>
 
                     </div>
