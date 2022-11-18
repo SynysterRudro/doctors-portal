@@ -4,13 +4,24 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Contexts/AuthProvider';
+import useToken from '../../hooks/useToken';
 
 const Signup = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { createUser, updateName, googleLogin } = useContext(AuthContext);
     const [signupError, setSignuError] = useState('');
 
+    // using custom hook 
+    const [createdUserEmail, setCreatedUserEmail] = useState('');
+    const [token] = useToken(createdUserEmail);
+
     const navigate = useNavigate();
+
+    if (token) {
+        navigate('/');
+    }
+
+    // custom hook ends 
 
     const googleProvider = new GoogleAuthProvider();
 
@@ -26,7 +37,7 @@ const Signup = () => {
 
                 updateName(data.name)
                     .then(() => {
-                        navigate('/');
+                        saveUser(data.name, data.email);
                     })
                     .catch(err => console.log(err));
             })
@@ -35,6 +46,37 @@ const Signup = () => {
                 setSignuError(error.message)
             });
     }
+
+    // user to database 
+    const saveUser = (name, email) => {
+        const user = { name, email };
+        fetch('http://localhost:5000/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(data => {
+                setCreatedUserEmail(email);
+            })
+    }
+
+    // getting user token 
+
+    // const getUserToken = email => {
+    //     fetch(`http://localhost:5000/jwt?email=${email}`)
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             if (data.accessToken) {
+    //                 localStorage.setItem('accessToken', data.accessToken)
+    //                 navigate('/');
+
+    //             }
+    //         })
+    // }
+    // alternative is below 
 
     // google sign in 
     // google login 
