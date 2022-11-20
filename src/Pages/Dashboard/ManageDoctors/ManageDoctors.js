@@ -1,26 +1,15 @@
 import { async } from '@firebase/util';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import ConfirmationModal from '../../Shared/ConfirmationModal/ConfirmationModal';
 import Loading from '../../Shared/Loading/Loading';
 
 const ManageDoctors = () => {
 
-    // this is for modal section 
-    const [deletingDoctor, setDeletingDoctor] = useState(null);
-
-    // modal close korar 
-    const closeModal = () => {
-        setDeletingDoctor(null);
-    }
-
-    // doctor delete korar jonno 
-    const handleDeleteDoctor = (doctor) => {
-        console.log(doctor);
-    }
 
 
-    const { data: doctors, isLoading } = useQuery({
+    const { data: doctors, isLoading, refetch } = useQuery({
         queryKey: ['doctors'],
         queryFn: async () => {
             try {
@@ -40,6 +29,36 @@ const ManageDoctors = () => {
         }
     });
 
+    // this is for modal section 
+    const [deletingDoctor, setDeletingDoctor] = useState(null);
+
+    // modal close korar 
+    const closeModal = () => {
+        setDeletingDoctor(null);
+    }
+
+    // doctor delete korar jonno 
+    const handleDeleteDoctor = (doctor) => {
+        // console.log(doctor);
+        fetch(`http://localhost:5000/doctors/${doctor._id}`, {
+            method: 'DELETE',
+            headers: {
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                if (data.deletedCount) {
+
+                    toast.success(`Doctor ${doctor.name} deleted successfully`)
+                    refetch();
+                }
+            })
+    }
+
+
+    // map korte jate problem na hoy 
     if (isLoading) {
         return <Loading></Loading>
     }
@@ -93,6 +112,7 @@ const ManageDoctors = () => {
                     title={`Are you sure you want to delete`}
                     message={`If you delete ${deletingDoctor.name},it can not be undone.`}
                     successAction={handleDeleteDoctor}
+                    successButtonName="Delete"
                     modalData={deletingDoctor}
                     closeModal={closeModal}
                 ></ConfirmationModal>
