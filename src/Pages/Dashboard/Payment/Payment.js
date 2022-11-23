@@ -16,14 +16,14 @@ const Payment = () => {
     const booking = useLoaderData();
 
     // loader function 
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
 
     const { treatment, price, slot, appointmentDate } = booking;
     // console.log(booking);
 
-    if (navigation.state === 'loading') {
-        return <Loading></Loading>
-    }
+    // if (navigation.state === 'loading') {
+    //     return <Loading></Loading>
+    // }
 
     return (
         <div>

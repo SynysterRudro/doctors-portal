@@ -16,7 +16,7 @@ const AddDoctor = () => {
     // loading data using react query 
     const { data: specialities, isLoading, error } = useQuery({
         queryKey: ['speciality'],
-        queryFn: async () => fetch('http://localhost:5000/appointmentSpeciality')
+        queryFn: async () => fetch('https://doctors-portal-server-opal-ten.vercel.app/appointmentSpeciality')
             .then(res => res.json())
     });
 
@@ -43,7 +43,7 @@ const AddDoctor = () => {
                     }
 
                     // save doctor information to the database 
-                    fetch(`http://localhost:5000/doctors`, {
+                    fetch(`https://doctors-portal-server-opal-ten.vercel.app/doctors`, {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json',
